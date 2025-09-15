@@ -1,0 +1,19 @@
+# Ignore everything in three_js_project
+/three_js_project/*
+
+# Except the app directory
+!/three_js_project/app/
+/three_js_project/app/*
+# Except the public directory inside app
+!/three_js_project/app/public/
+/three_js_project/app/public/*
+
+# Except the asset directory inside public
+!/three_js_project/app/public/asset/
+/three_js_project/app/public/asset/*
+
+# Ignore everything else inside asset, unless it's a file (to allow actual files)
+/three_js_project/app/public/asset/*
+
+# Un-ignore all files inside asset
+!/three_js_project/app/public/asset/**/*
