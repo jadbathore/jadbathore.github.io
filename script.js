@@ -39695,47 +39695,6 @@ donus:new ImageCache('./three_js_project/app/public/asset/glb/donus.glb'),
 earth:new ImageCache('./three_js_project/app/public/asset/glb/earth.glb'),
 }
 static glsl = {
-daynightFrament:`uniform sampler2D u_dayTexture;
-uniform sampler2D u_nightTexture;
-uniform sampler2D u_normalTexture;
-uniform vec3 u_sunRelPosition;
-varying vec2 vUv;
-varying vec3 vNormal;
-void main( void ) {
-   vec3 sunDir = normalize(u_sunRelPosition);
-   vec3 dayColor = texture2D( u_dayTexture,vUv).rgb;
-   vec3 nightColor = texture2D( u_nightTexture,vUv).rgb;
-    float cosAngleSunToNormal = dot(vNormal,sunDir);
-   float mixAmountTexture = 1. / (1. + exp(-20. * cosAngleSunToNormal))
-    vec3 color = mix(nightColor,dayColor,mixAmountTexture);
-   gl_FragColor = vec4(color,1.);
-    vec3 t_normal = texture2D(u_normalTexture,vUv).xyz * 2.0 - 1.0;
-   vec3 normal = normalize(vTbn * t_normal);
-   float cosAngleSunToSurface = dot(normal,sunDir);
-   mixAmountTexture *= 1.0 + u_normalPower *(cosAngleSunToSurface - cosAngleSunToNormal);
-   mixAmountTexture = clamp(mixAmountTexture,0.,1.);
-
-}`,
-daynightShader:`varying vec2 vUv;
-varying vec3 vNormal;
-varying vec3 vPosition;
-varying mat3 vTbn;
-attribute vec4 tangent; // "geometry.computeTangents()" is needed.
-void main() {
-   vUv = uv;
-   vNormal = normalize(mat3(modelMatrix) * normal);
-   vPosition = mat3(modelMatrix) * position;
-   
-   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    vec3 t = normalize(tangent.xyz);
-   vec3 n = normalize(normal.xyz);
-   vec3 b = normalize(cross(t, n));
-    t = mat3(modelMatrix) * t;
-   b = mat3(modelMatrix) * b;
-   n = mat3(modelMatrix) * n;
-   vTbn = mat3(t, b, n);
-}
-`,
 fresnelFragment:`uniform vec3 color1;
 uniform vec3 color2;
 varying float vReflectionFactor;
@@ -39801,9 +39760,9 @@ document.body.appendChild(this.renderer.domElement);
 this.labelRenderer = new CSS2DRenderer();
 this.labelRenderer.setSize(...this.tupleSize);
 this.labelRenderer.domElement.className = "css-container";
+// document.body.appendChild(this.labelRenderer.domElement)
 document.body.appendChild(this.labelRenderer.domElement);
 this.labelRenderer.domElement.style.pointerEvents = 'none'; 
-
 
 //&end
 }
@@ -39816,14 +39775,14 @@ this.camera = new PerspectiveCamera(
    0.1,
    1000
 ); 
-
 this.camera.updateProjectionMatrix();
 this.camera.position.set(2,5,-100);
 
 this.Zfinal = -10;
+
 this.orbit = new OrbitControls(this.camera,this.renderer.domElement);
 this.orbit.enabled =false;
-this.positionOfZ = {} ;
+this.positionOfZ = {};
 window.addEventListener('DOMContentLoaded',()=>{
    this.positionOfZ.z = this.camera.position.z;
 });
@@ -39831,7 +39790,6 @@ window.addEventListener('DOMContentLoaded',()=>{
 }
 file_loader(){
 //----|4.loader.cjs|----
-
 this.loader = new TextureLoader();
 //&end
 }
@@ -39950,8 +39908,7 @@ function addProjectPlanet(
        })
    );
    moonRotation.add(moonMesh); 
-
-    moonMesh.position.x = positionX;
+   moonMesh.position.x = positionX;
    moonMesh.castShadow = true; 
    const fontLoader = new FontLoader();
            const lettergroup = new Object3D();
@@ -40064,7 +40021,6 @@ this.venus.userData.originalData = this.venus.userData.rotationSpeed;
 file_raycaster(){
 //----|4.raycaster.cjs|----
 
-
 this.raycaster = new Raycaster();
 this.mouse = new Vector2();
 function getFresnelMat({rimHex = 0x0088ff,facingHax = 0x000000} = {})
@@ -40087,18 +40043,33 @@ transparent: true,
 return fresnelMat;
 }
 
-let actif = true;
+/**
+* @returns {Promise<number|object>}
+*/
+function captionData(data,time)
+{
+ /**
+  * @type {number|object}
+  */
+ let redirectionCaption = (typeof data == "number")?   data : Object.assign({}, data) ;
+ const promise = new Promise((resolve)=>{
+     resolve(redirectionCaption);
+ },time);
+ return promise
+}
+
+
 function getRandomHexColor() 
 {
    const hex = Math.floor(Math.random() * 16777215).toString(16);
    return "#" + hex.padStart(6, "0");
 }
 
-
+let actif = true;
 /**
 *  @param {Object3D<Object3DEventMap>}  object3D
 *  @param {CSS2DRenderer} label
- */
+*/
 function divinfo(label,scene3D,object3D,act) 
 {
  if(!act)return;
@@ -40130,17 +40101,28 @@ function divinfo(label,scene3D,object3D,act)
    event.preventDefault();
    const time = 2000;
    const accelerationphase = 10;
-   // console.log(object3D.name)
-   setTimeout(()=>{
-     location.href = object3D.userData.href;
-   },time);
+   captionData(object3D.userData.rotationSpeed).then((dataCap)=>{
+     setTimeout(()=>{
+       if(typeof dataCap == "object"){
+         Object.entries(dataCap).forEach(([key,value])=>{
+           object3D.userData.rotationSpeed[key] = value;
+         });
+       } else {
+         object3D.userData.rotationSpeed = dataCap;
+       }
+       location.href = object3D.userData.href;
+       window.scrollTo(0, 0);
+     },time);
+   });
+   
    for (let i = 0; i <= accelerationphase; i++) {
      setTimeout(()=>{
-       if(typeof object3D.userData.rotationSpeed == 'number'){
+       if(typeof object3D.userData.rotationSpeed == 'number')
+       {
          object3D.userData.rotationSpeed = object3D.userData.rotationSpeed + (0.001 * i);
        } else {
          Object.entries(object3D.userData.rotationSpeed).forEach(([key,value])=>{
-             const acceleration = (key == 'self')? 0.004:(key == 'orbitPlanet')? 0.0001 : 0.005;
+           const acceleration = (key == 'self')? 0.004:(key == 'orbitPlanet')? 0.0001 : 0.005;
            if(value <= 0){
              object3D.userData.rotationSpeed[key] = object3D.userData.rotationSpeed[key] - (acceleration * i); 
            } else {
@@ -40156,34 +40138,45 @@ function divinfo(label,scene3D,object3D,act)
  const glowmesh = new Mesh(
    object3D.geometry,
    getFresnelMat({rimHex:getRandomHexColor(),facingHax:0x000000})
-   
  );
   glowmesh.scale.setScalar(1.1);
  object3D.add(glowmesh);
- remove.addEventListener('click',()=>{
+  remove.addEventListener('click',()=>{
    object3D.remove(glowmesh);
    scene3D.remove(cPointer);
    label.domElement.style.pointerEvents = 'none';
    actif = !actif;
  });
-  
 }
 
-// Écoute du clic souris
-window.addEventListener('click', (event) => {
- this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
- this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
- this.raycaster.setFromCamera(this.mouse, this.camera);
- this.intersects = this.raycaster.intersectObjects([this.earthGroup,this.moon,this.mars,this.venus], true);
- if (this.intersects.length > 0) {
-    divinfo(
-     this.labelRenderer,
-     this.scene,
-     this.intersects[0].object,
-     actif
-   );
- }
-});
+this.raycastCallBack = (event) =>{
+ this.touch = event?.touches?.[0] ?? event;
+   this.mouse.x = (this.touch.clientX / window.innerWidth) * 2 - 1;
+   this.mouse.y = - (this.touch.clientY / window.innerHeight) * 2 + 1;
+   this.raycaster.setFromCamera(this.mouse, this.camera);
+   this.intersects = this.raycaster.intersectObjects([this.earthGroup,this.moon,this.mars,this.venus], true);
+   if (this.intersects.length > 0) {
+       divinfo(
+         this.labelRenderer,
+         this.scene,
+         this.intersects[0].object,
+         actif
+       );
+     }
+};
+
+window.addEventListener('click',this.raycastCallBack);
+window.addEventListener('touchstart',this.raycastCallBack);
+
+document.addEventListener('gesturestart', function (e) {
+ e.preventDefault();
+}, { passive: false });
+document.addEventListener('gesturechange', function (e) {
+ e.preventDefault();
+}, { passive: false });
+document.addEventListener('gestureend', function (e) {
+ e.preventDefault();
+}, { passive: false });
 //&end
 }
 file_toggles(){
@@ -40199,7 +40192,46 @@ this.labelName.setAttribute('for',this.idName);
 this.labelName.textContent = "Rotation";
 this.input = document.createElement('button');
 this.input.id = this.idName;
-this.toggles.append(this.labelName,this.input);
+this.buttonMessage = document.createElement('div');
+this.buttonMessage.className = "association";
+this.buttonMessage.textContent = "🇵🇸";
+
+function createLinkAssociation(content,link)
+{
+   const a = document.createElement('a');
+   a.textContent = content;
+   a.href = link;
+   return a;
+}
+
+let toogleMessage = true;
+this.buttonMessage.addEventListener('click',()=>{
+   if(toogleMessage){
+       this.messagePointer = document.createElement('div');
+       this.messagePointer.style.pointerEvents = 'auto'; 
+       this.cPointerMessage = new CSS2DObject(this.messagePointer);
+       this.messagePointer.className = "list-content";
+       this.medecinDuMonde = createLinkAssociation(
+           "Médecin Du Monde",
+           "https://dons.medecinsdumonde.org/tst3B/~mon-don"
+       );
+       this.medecinSansFrontiere = createLinkAssociation(
+           "Médecin Sans Frontière",
+           "https://soutenir.msf.fr/fonds-urgence-gaza/~mon-don"
+       );
+       this.croixRouge = createLinkAssociation(
+           "La croix Rouge",
+           "https://donner.croix-rouge.fr/faire-un-don/~mon-don"
+       );
+       this.messagePointer.append(this.medecinDuMonde,this.medecinSansFrontiere,this.croixRouge);
+       this.scene.add(this.cPointerMessage);
+   } else {
+       this.scene.remove(this.cPointerMessage);
+   }
+   toogleMessage = !toogleMessage;
+});
+
+this.toggles.append(this.buttonMessage,this.labelName,this.input);
 this.input.textContent = "Stop";
 this.cPointerTogles.visible = false;
 this.scene.add(this.cPointerTogles); 
@@ -40297,6 +40329,7 @@ if (Math.round(this.positionOfZ.z)  == this.Zfinal && this.active){
    this.orbit.update();
    this.cPointerTogles.element.className += ' fadeIn';
    this.cPointerTogles.visible = true;
+   this.orbit.enablePan = false;
    this.active =false;
 }
 requestAnimationFrame(()=>{
