@@ -40084,12 +40084,12 @@ function divinfo(label,scene3D,object3D,act)
  divHeader.className = "header-info";
  div.appendChild(divHeader);
  /*-----content-headers-----*/
+  const h1 = document.createElement('h1');
+ h1.textContent = object3D.userData.title;  
+ divHeader.appendChild(h1);
  const remove = document.createElement('button');
  remove.innerHTML = "&#10006;";
  divHeader.appendChild(remove);
- const h1 = document.createElement('h1');
- h1.textContent = object3D.userData.title;  
- divHeader.appendChild(h1);
  /*--------content----------*/  
  const p =  document.createElement('p');
  p.textContent = object3D.userData.paragraph;
@@ -40111,7 +40111,8 @@ function divinfo(label,scene3D,object3D,act)
          object3D.userData.rotationSpeed = dataCap;
        }
        location.href = object3D.userData.href;
-       window.scrollTo(0, 0);
+       document.body.style.overflow = 'hidden';
+       // window.scrollTo(0, 0);
      },time);
    });
    
@@ -40367,6 +40368,7 @@ window.addEventListener('resize',()=> {
    this.composer.setSize(window.innerWidth,window.innerHeight);
    this.labelRenderer.setSize(window.innerWidth,window.innerHeight);
 });
+
 //&end
 }
 }
