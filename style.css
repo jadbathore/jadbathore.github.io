@@ -131,6 +131,11 @@ body, html {
     text-align: center;
   }
 }
+@media (max-width: 480px) {
+  .css-container .info-text p {
+    font-size: 10.08px;
+  }
+}
 .css-container .info-text p {
   text-align: justify;
 }

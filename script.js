@@ -39766,7 +39766,6 @@ this.labelRenderer.domElement.style.pointerEvents = 'none';
 }
 file_cameraSetting(){
 //----|2.cameraSetting.cjs|----
-this.__cameraSetting__ = {};
 this.camera = new PerspectiveCamera(
 45,
 window.innerWidth/window.innerHeight,
@@ -39798,12 +39797,36 @@ let progressBar = document.createElement("progress");
 progressBar.setAttribute("value",0);
 progressBar.setAttribute("max",100);
 
-this.loadingManager.onStart = (url,item,total) =>{
-   this.loadingBar.append(labelProgress,progressBar);
-   this.scene.add(this.cPointerBar);
+function cacheAdd(url)
+{
+   caches.open("lOADMANAGER").then((cache)=>{
+       cache.add(url);
+   });
+}
+/**
+* 
+* @param {*} url 
+* @returns {Promise<boolean>}
+*/
+async function inCache(url)
+{
+   return await caches.open("lOADMANAGER").then((cache)=>{
+       return cache.match(url).then(async(value)=>{
+           return (typeof value == "undefined") ?false:true; 
+       })
+   })
+}
+
+this.loadingManager.onStart = async (url,item,total) =>{
+   let testCache = await inCache(url);
+   if(!testCache){
+       this.loadingBar.append(labelProgress,progressBar);
+       this.scene.add(this.cPointerBar);
+       cacheAdd(url);
+   }
 };
 this.loadingManager.onProgress = (url,item,total) =>{
-   progressBar.setAttribute("value",(item/total) * 100);
+    progressBar.setAttribute("value",(item/total) * 100);
 }; 
 this.loadingManager.onLoad = () => {
    this.scene.remove(this.cPointerBar);
@@ -39885,7 +39908,6 @@ rotationSpeed:0.005
 }
 file_moon(){
 //----|3.moon.cjs|----
-this.__moon__ = {};
 /**
 * 
 * @param {THREE.Scene} scene3D 
@@ -39973,7 +39995,7 @@ this.scene,this.loader,Content.img.moonmap4k.url,Content.img.moonbump4k.url,
 0xffcc00,
 {
 title:"stampy-cli",
-paragraph:`Is a this.composer plugin that makes it easier to use the PHP command prompt in your project in a clean and organized way.You could also use contenerize version of the project and .env file`,
+paragraph:`Is a composer plugin that makes it easier to use the PHP command prompt in your project in a clean and organized way.You could also use contenerize version of the project and .env file`,
 href:"https://github.com/jadbathore/stampy-php-cli",
 labelRedirection:"project"
 }
@@ -40033,7 +40055,6 @@ this.venus.userData.originalData = this.venus.userData.rotationSpeed;
 }
 file_raycaster(){
 //----|4.raycaster.cjs|----
-this.__raycaster__ = {};
 this.raycaster = new Raycaster();
 this.mouse = new Vector2();
 function getFresnelMat({rimHex = 0x0088ff,facingHax = 0x000000} = {})
@@ -40182,7 +40203,8 @@ e.preventDefault();
 }, { passive: false });
 document.addEventListener('gestureend', function (e) {
 e.preventDefault();
-}, { passive: false });//&end
+}, { passive: false });
+//&end
 }
 file_toggles(){
 //----|5.toggles.cjs|----
@@ -40274,7 +40296,6 @@ this.composer.addPass(this.bloomPass);
 }
 file_getStarField(){
 //----|getStarField.cjs|----
-this.__getStarField__ = {};
 function getStarfield({numStar = 500} = {},loaders)
 {    
 function randomSpherePoint() {
@@ -40317,7 +40338,8 @@ return points;
 }
 this.star = getStarfield({numStar:2000},this.loader);
 this.scene.add(this.star);
-this.__getStarField__.active = false;//&end
+this.active = false;
+//&end
 }
 file_animate(){
 //----|animate.cjs|----
@@ -40355,7 +40377,6 @@ this.file_animate();
 }
 file_resizeSetting(){
 //----|resizeSetting.cjs|----
-this.__resizeSetting__ = {};
 window.addEventListener('resize',()=> {
 this.camera.aspect = window.innerWidth / window.innerHeight;
 this.camera.updateProjectionMatrix();
