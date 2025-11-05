@@ -94,10 +94,13 @@ body, html {
 .loadingbar progress::-webkit-progress-bar, .loadingbar progress {
   background-color: black;
 }
+.loadingbar progress::-webkit-progress-value {
+  background-color: #005506;
+}
 .loadingbar {
   /* Style pour Firefox */
 }
-.loadingbar progress::-moz-progress-bar, .loadingbar progress::-webkit-progress-value {
+.loadingbar progress::-moz-progress-bar {
   background: linear-gradient(90deg, #005506, #45a049);
 }
 
@@ -275,6 +278,10 @@ canvas {
 .list-content a {
   margin: 2%;
   border-radius: 5%;
+}
+
+.hidden {
+  display: none;
 }
 
 /*# sourceMappingURL=style.css.map */
