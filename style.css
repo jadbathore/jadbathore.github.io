@@ -21,9 +21,10 @@ body, html {
   color: white;
   background-color: black;
   padding: 0.7em;
+  margin: 1em;
   text-transform: none;
   text-decoration: none;
-  border-radius: 25%/50%;
+  border-radius: 5%;
 }
 .button-interaction:hover, .list-content a:hover, .info-toggle button:hover, .css-container .info-text a:hover {
   color: black;
@@ -134,6 +135,10 @@ body, html {
     text-align: center;
   }
 }
+.css-container .info-text a {
+  border-radius: 25%/50%;
+  margin-bottom: 30px;
+}
 @media (max-width: 480px) {
   .css-container .info-text p {
     font-size: 10.08px;
@@ -193,64 +198,37 @@ canvas {
 }
 
 .info-toggle {
-  display: flex;
-  border-radius: 2em;
-  align-items: center;
+  display: inline-flex;
+  margin: 0;
+  padding: 10px;
   top: calc(-50% + 5% + 5px);
-  justify-content: space-between;
-  height: 5%;
+}
+.info-toggle * {
+  flex: 1;
+  vertical-align: middle;
 }
 @media (min-aspect-ratio: 0.95) {
   .info-toggle {
     width: 30%;
-    height: 5%;
+    height: 30%/5;
   }
 }
 @media (max-aspect-ratio: 0.95) {
   .info-toggle {
     width: 50%;
-    height: 5%;
+    height: 50%/5;
   }
-}
-.info-toggle * {
-  margin: 1em;
-  padding: 1em;
-  align-items: center;
 }
 .info-toggle button {
-  line-height: 10%;
   border: none;
-  height: 2em;
-  margin-right: 0.1em;
+  padding: 0;
+  margin: 0;
 }
 .info-toggle label {
-  line-height: 15%;
-  margin-right: 0.1em;
+  flex: 2;
 }
 .info-toggle .association {
-  all: initial;
-  margin: 0;
-  margin-left: 0.1em;
-  padding: 0;
-  line-height: 10%;
-}
-@media (max-width: 480px) {
-  .info-toggle .association {
-    font-size: 9.6px;
-  }
-}
-@media (max-width: 768px) {
-  .info-toggle .association {
-    font-size: 16.896px;
-  }
-}
-@media (min-width: 768px) {
-  .info-toggle .association {
-    font-size: 24.576px;
-  }
-}
-.info-toggle .association:hover {
-  transform: scale(1.2);
+  background-color: rgba(69, 160, 73, 0);
 }
 
 .list-content {
