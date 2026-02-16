@@ -54915,19 +54915,18 @@ this.loadingManager = new LoadingManager();
 async function inCache(url)
 {
 return await caches.open("lOADMANAGER").then((cache)=>{
-  return cache.match(url).then(async(value)=>{
-      return (typeof value == "undefined") ?false:true; 
-  })
+    return cache.match(url).then(async(value)=>{
+        return (typeof value == "undefined") ?false:true; 
+    })
 })
 }
 function cacheAdd(url)
 {
 caches.open("lOADMANAGER").then((cache)=>{
-  cache.add(url);
+    cache.add(url);
 });
 }
 /** 
-* 
 * @param {LoadingManager} loadingManagerObj 
 */
 function loadingManagerObj(loadingManagerObj,scene3D)
@@ -54941,22 +54940,23 @@ labelProgress.setAttribute("for","progress-bar");
 let progressBar = document.createElement("progress");
 progressBar.setAttribute("value",0);
 progressBar.setAttribute("max",100);
-loadingManagerObj.onStart = async (url,item,total) =>{
-  let testCache = await inCache(url);
-  if(!testCache){
-      loadingBar.append(labelProgress,progressBar);
-      scene3D.add(cPointerBar);
-      cacheAdd(url);
-  }
+
+ loadingManagerObj.onStart = async (url,item,total) =>{
+    let testCache = await inCache(url);
+    if(!testCache){
+        loadingBar.append(labelProgress,progressBar);
+        scene3D.add(cPointerBar);
+        cacheAdd(url);
+    }
 };
-loadingManagerObj.onProgress = (url,item,total) =>{
-  progressBar.setAttribute("value",(item/total) * 100);
+ loadingManagerObj.onProgress = (url,item,total) =>{
+    progressBar.setAttribute("value",(item/total) * 100);
 }; 
-loadingManagerObj.onLoad = () =>{
-  loadingBar.className += "hidden";
-  labelProgress.className += "hidden";
-  progressBar.className += "hidden";
-  scene3D.remove(cPointerBar);
+ loadingManagerObj.onLoad = () =>{
+    loadingBar.className += "hidden";
+    labelProgress.className += "hidden";
+    progressBar.className += "hidden";
+    scene3D.remove(cPointerBar);
 };
 }
 loadingManagerObj(this.loadingManager,this.scene);
@@ -55004,40 +55004,40 @@ this.scene.add(this.earthGroup);
 this.geo = new IcosahedronGeometry(1,12);
 this.bump = 4;
 this.dayTexture = new MeshPhongMaterial(
-  {
-      bumpMap:this.loader.load(Content.img.moonbump4k.url),
-      specularMap:this.loader.load(Content.img.specularmap.url),
-      map:this.loader.load(Content.img.mapDay.url),
-      bumpScale:this.bump,
-      shininess:0,
-      specular: 0xFFFFFF,
-      opacity:1,
-      color: 0xff9d00,
-      // normalMap:this.loader.load(Content.img.NormalMap.url),
-      // normalScale:this.bump,
-      transparent:true,
-      // wireframe:true
-      blending: AdditiveBlending,
-  }
+    {
+        bumpMap:this.loader.load(Content.img.moonbump4k.url),
+        specularMap:this.loader.load(Content.img.specularmap.url),
+        map:this.loader.load(Content.img.mapDay.url),
+        bumpScale:this.bump,
+        shininess:0,
+        specular: 0xFFFFFF,
+        opacity:1,
+        color: 0xff9d00,
+        // normalMap:this.loader.load(Content.img.NormalMap.url),
+        // normalScale:this.bump,
+        transparent:true,
+        // wireframe:true
+        blending: AdditiveBlending,
+    }
 );
 this.dayNightMesh = new Mesh(this.geo,this.dayMesh);
 this.nightMesh = new Mesh(
 this.geo,
 new MeshStandardMaterial({
-  lightMap:this.loader.load(Content.img.lightMap.url),
-  map:this.loader.load(Content.img.mapNight.url),
-  bumpMap:this.loader.load(Content.img.bumpMap.url),
-  bumpScale:this.bump,
-  normalMap:this.loader.load(Content.img.NormalMap.url),
-  normalScale:this.bump,
-  // transparent:true,
-  // opacity:1,
-  blendAlpha:1,
-  // reflectivity:1,
-  emissive:1,
-  // emissiveIntensity:4,
-  lightMapIntensity:1.1,
-  blending: AdditiveBlending,
+    lightMap:this.loader.load(Content.img.lightMap.url),
+    map:this.loader.load(Content.img.mapNight.url),
+    bumpMap:this.loader.load(Content.img.bumpMap.url),
+    bumpScale:this.bump,
+    normalMap:this.loader.load(Content.img.NormalMap.url),
+    normalScale:this.bump,
+    // transparent:true,
+    // opacity:1,
+    blendAlpha:1,
+    // reflectivity:1,
+    emissive:1,
+    // emissiveIntensity:4,
+    lightMapIntensity:1.1,
+    blending: AdditiveBlending,
 })
 );
 // this.earthGroup.add(this.dayNightMesh)
@@ -55060,6 +55060,7 @@ rotationSpeed:0.005
 }
 file_moon(){
 //----|3.moon.cjs|----
+this.__moon__ = {};
 /**
 * 
 * @param {THREE.Scene} scene3D 
@@ -55079,130 +55080,150 @@ file_moon(){
 * }}
 */
 function addProjectPlanet(
-scene3D,loader3D,map,bumpMap,positionX,color,infoObj
+ scene3D,loader3D,map,bumpMap,positionX,color,infoObj
 )
 {
-const orbitGroup = new Group();
-scene3D.add(orbitGroup);
-const moonRotation = new Object3D();
-orbitGroup.add(moonRotation);
-const moonMesh = new Mesh(
-  new IcosahedronGeometry(0.27,12),
-  new MeshPhongMaterial({
-      map:loader3D.load(map),
-      bumpMap:loader3D.load(bumpMap),
-      bumpScale:4,
-  })
+ const orbitGroup = new Group();
+ scene3D.add(orbitGroup);
+ const moonRotation = new Object3D();
+ orbitGroup.add(moonRotation);
+  const moonMesh = new Mesh(
+     new IcosahedronGeometry(0.27,12),
+     new MeshPhongMaterial({
+         map:loader3D.load(map),
+         bumpMap:loader3D.load(bumpMap),
+         bumpScale:4,
+     })
+ );
+ moonRotation.add(moonMesh); 
+ moonMesh.position.x = positionX;
+ moonMesh.castShadow = true; 
+ const fontLoader = new FontLoader();
+         const lettergroup = new Object3D();
+     moonRotation.add(lettergroup);
+ fontLoader.load("https://cdn.jsdelivr.net/npm/three@0.155.0/examples/fonts/helvetiker_regular.typeface.json",(font)=>{
+     /**
+      * @type string
+      */
+     const word = infoObj.title;
+     const radius = 0.5;
+     let i = 0;
+      lettergroup.position.copy(moonMesh.position);
+     for(const letter of word){
+         const textGeo = new TextGeometry(letter,{
+             font: font,
+             size: 0.2,
+             depth: 0.05,
+             curveSegments: 1,
+         });
+         const material = new MeshStandardMaterial(
+             { 
+                 color: color,
+                 transparent:true,
+                 emissive:new Color(color),
+                 emissiveIntensity:0.5,
+             });
+         const mesh = new Mesh(textGeo,material);
+         mesh.name = letter;
+         const angle =  (i / word.length) * (Math.PI*2);
+         const x =  Math.sin(angle) * radius;
+         const z =  Math.cos(angle) * radius;
+         mesh.position.set(x,0,z);
+         lettergroup.add(mesh);
+         mesh.lookAt(moonMesh.position);
+         mesh.rotateY(Math.PI);
+         i++;
+     }
+ });
+ moonMesh.userData = infoObj;
+ return {
+     group:orbitGroup,
+     planet:moonMesh,
+     led:lettergroup
+ }
+}
+let {group:UranusGroup,planet:Uranus,led:Uranusletter} = addProjectPlanet(
+ this.scene,this.loader,Content.img.moonmap4k.url,Content.img.moonbump4k.url,
+ -9,
+ 0x0313fc,
+ {
+     title:"virtual-front-end",
+     paragraph:`It's a cloud base tcp serveur that allow you to acces vitual file in your front-end website build with wasi you can also use sandboxing feature to run script in a secure way`,
+     href:"https://github.com/jadbathore/vitual-tcp-serveur",
+     labelRedirection:"project"
+ }
 );
-moonRotation.add(moonMesh); 
-moonMesh.position.x = positionX;
-moonMesh.castShadow = true; 
-const fontLoader = new FontLoader();
-      const lettergroup = new Object3D();
-  moonRotation.add(lettergroup);
-fontLoader.load("https://cdn.jsdelivr.net/npm/three@0.155.0/examples/fonts/helvetiker_regular.typeface.json",(font)=>{
-  /**
-   * @type string
-   */
-  const word = infoObj.title;
-  const radius = 0.5;
-  let i = 0;
-   lettergroup.position.copy(moonMesh.position);
-  for(const letter of word){
-      const textGeo = new TextGeometry(letter,{
-          font: font,
-          size: 0.2,
-          depth: 0.05,
-          curveSegments: 1,
-      });
-      const material = new MeshStandardMaterial(
-          { 
-              color: /* 0xffcc00 */ color,
-              transparent:true,
-              emissive:new Color(color),
-              emissiveIntensity:0.5,
-          });
-      const mesh = new Mesh(textGeo,material);
-      mesh.name = letter;
-      const angle =  (i / word.length) * (Math.PI*2);
-      const x =  Math.sin(angle) * radius;
-      const z =  Math.cos(angle) * radius;
-      mesh.position.set(x,0,z);
-      lettergroup.add(mesh);
-      mesh.lookAt(moonMesh.position);
-      mesh.rotateY(Math.PI);
-      i++;
-  }
-});
-moonMesh.userData = infoObj;
-return {
-  group:orbitGroup,
-  planet:moonMesh,
-  led:lettergroup
-}
-}
 let {group:MoonGroup,planet:Moon,led:Moonletter} = addProjectPlanet(
-this.scene,this.loader,Content.img.moonmap4k.url,Content.img.moonbump4k.url,
-3,
-0xffcc00,
-{
-  title:"stampy-cli",
-  paragraph:`Is a composer plugin that makes it easier to use the PHP command prompt in your project in a clean and organized way.You could also use contenerize version of the project and .env file`,
-  href:"https://github.com/jadbathore/stampy-php-cli",
-  labelRedirection:"project"
-}
+ this.scene,this.loader,Content.img.moonmap4k.url,Content.img.moonbump4k.url,
+ 3,
+ 0xffcc00,
+ {
+     title:"stampy-cli",
+     paragraph:`Is a this.composer plugin that makes it easier to use the PHP command prompt in your project in a clean and organized way.You could also use contenerize version of the project and .env file`,
+     href:"https://github.com/jadbathore/stampy-php-cli",
+     labelRedirection:"project"
+ }
 );
 let {group:MarsGroup,planet:Mars,led:Marsletter} = addProjectPlanet(
-this.scene,this.loader,Content.img.marsmap1k.url,Content.img.marsbump1k.url,
--5,
-"#61eb34",
-{
-  title:"three_js_project",
-  paragraph:`This project combines all the files into a single file to be interpreted in a "classic" way by an ejs element. It is useful for large projects using Three.js.
-  The usefulness of this project lies in the organization of the files, the practical use of the integrated CLI, and the express server system, which allows you to render pages dynamically, for example.`,
-  href:"https://github.com/jadbathore/three_js_project",
-  labelRedirection:"project"
-}
+ this.scene,this.loader,Content.img.marsmap1k.url,Content.img.marsbump1k.url,
+ -5,
+ "#61eb34",
+ {
+     title:"three_js_project",
+     paragraph:`This project combines all the files into a single file to be interpreted in a "classic" way by an ejs element. It is useful for large projects using Three.js.
+     The usefulness of this project lies in the organization of the files, the practical use of the integrated CLI, and the express server system, which allows you to render pages dynamically, for example.`,
+     href:"https://github.com/jadbathore/three_js_project",
+     labelRedirection:"project"
+ }
 );
 let {group:VenusGroup,planet:Venus,led:VenusLetter} = addProjectPlanet(
-this.scene,this.loader,Content.img.mercurymap.url,Content.img.mercurybump.url,
-7,
-"#e100ff",
-{
-  title:"symfony_jwt",
-  paragraph:`This project is a RESTful API built with Symfony, designed to provide secure user authentication using JSON Web Tokens (JWT). 
-  The API allows users to register, log in, and access protected endpoints by including a valid JWT token in their requests. 
-  The system uses LexikJWTAuthenticationBundle to handle token generation and validation, ensuring a secure and stateless authentication process. This project serves as 
-  a foundation for building modern web or mobile applications that require reliable and scalable backend authentication.`,
-  href:"https://github.com/jadbathore/Api_securite_symfony_jwt",
-  labelRedirection:"project"
-}
+ this.scene,this.loader,Content.img.mercurymap.url,Content.img.mercurybump.url,
+ 7,
+ "#e100ff",
+ {
+     title:"symfony_jwt",
+     paragraph:`This project is a RESTful API built with Symfony, designed to provide secure user authentication using JSON Web Tokens (JWT). 
+     The API allows users to register, log in, and access protected endpoints by including a valid JWT token in their requests. 
+     The system uses LexikJWTAuthenticationBundle to handle token generation and validation, ensuring a secure and stateless authentication process. This project serves as 
+     a foundation for building modern web or mobile applications that require reliable and scalable backend authentication.`,
+     href:"https://github.com/jadbathore/Api_securite_symfony_jwt",
+     labelRedirection:"project"
+ }
 );
+this.uranusGroup = UranusGroup;
+this.uranus = Uranus;
+this.uranusLetter = Uranusletter;
+this.uranus.userData.rotationSpeed = {
+ self:0.001,
+ orbitPlanet:0.002,
+ letters:-0.02
+};
+this.uranus.userData.originalData = this.uranus.userData.rotationSpeed;
 this.moonGroup = MoonGroup;
 this.moon = Moon;
 this.moonLetter = Moonletter;
 this.moon.userData.rotationSpeed = {
-self:0.01,
-orbitPlanet:0.005,
-letters:-0.02
+ self:0.01,
+ orbitPlanet:0.005,
+ letters:-0.02
 };
 this.moon.userData.originalData = this.moon.userData.rotationSpeed;
 this.marsGroup = MarsGroup;
 this.mars = Mars;
 this.marsLetter = Marsletter;
 this.mars.userData.rotationSpeed = {
-self:0.008,
-orbitPlanet:-2e-3,
-letters:0.02
+ self:0.008,
+ orbitPlanet:-2e-3,
+ letters:0.02
 };
 this.mars.userData.originalData = this.mars.userData.rotationSpeed;
 this.venusGroup = VenusGroup;
 this.venus = Venus;
 this.venusLetter = VenusLetter;
 this.venus.userData.rotationSpeed = {
-self:0.01,
-orbitPlanet:0.003,
-letters:-0.02
+ self:0.01,
+ orbitPlanet:0.003,
+ letters:-0.02
 };
 this.venus.userData.originalData = this.venus.userData.rotationSpeed;
 //&end
@@ -55214,11 +55235,11 @@ this.mouse = new Vector2();
 function getFresnelMat({rimHex = 0x0088ff,facingHax = 0x000000} = {})
 {
 const uniforms = {
-  color1: {value: new Color(rimHex)},
-  color2: {value: new Color(facingHax)},
-  fresnelBias:{value:0.2},
-  fresnelScale:{value:1.0},
-  fresnelPower:{value:4.0},
+    color1: {value: new Color(rimHex)},
+    color2: {value: new Color(facingHax)},
+    fresnelBias:{value:0.2},
+    fresnelScale:{value:1.0},
+    fresnelPower:{value:4.0},
 };
 const fresnelMat = new ShaderMaterial({
 uniforms: uniforms,
@@ -55240,7 +55261,7 @@ function captionData(data,time)
 */
 let redirectionCaption = (typeof data == "number")?   data : Object.assign({}, data) ;
 const promise = new Promise((resolve)=>{
-resolve(redirectionCaption);
+  resolve(redirectionCaption);
 },time);
 return promise
 }
@@ -55286,35 +55307,36 @@ event.preventDefault();
 const time = 2000;
 const accelerationphase = 10;
 captionData(object3D.userData.rotationSpeed).then((dataCap)=>{
-setTimeout(()=>{
-  if(typeof dataCap == "object"){
-    Object.entries(dataCap).forEach(([key,value])=>{
-      object3D.userData.rotationSpeed[key] = value;
-    });
-  } else {
-    object3D.userData.rotationSpeed = dataCap;
-  }
-  location.href = object3D.userData.href;
-  document.body.style.overflow = 'hidden';
-  // window.scrollTo(0, 0);
-},time);
+  setTimeout(()=>{
+    if(typeof dataCap == "object"){
+      Object.entries(dataCap).forEach(([key,value])=>{
+        object3D.userData.rotationSpeed[key] = value;
+      });
+    } else {
+      object3D.userData.rotationSpeed = dataCap;
+    }
+    location.href = object3D.userData.href;
+    document.body.style.overflow = 'hidden';
+    // window.scrollTo(0, 0);
+  },time);
 });
+
 for (let i = 0; i <= accelerationphase; i++) {
-setTimeout(()=>{
-  if(typeof object3D.userData.rotationSpeed == 'number')
-  {
-    object3D.userData.rotationSpeed = object3D.userData.rotationSpeed + (0.001 * i);
-  } else {
-    Object.entries(object3D.userData.rotationSpeed).forEach(([key,value])=>{
-      const acceleration = (key == 'self')? 0.004:(key == 'orbitPlanet')? 0.0001 : 0.005;
-      if(value <= 0){
-        object3D.userData.rotationSpeed[key] = object3D.userData.rotationSpeed[key] - (acceleration * i); 
-      } else {
-        object3D.userData.rotationSpeed[key] = object3D.userData.rotationSpeed[key] + (acceleration * i); 
-      }
-    });
-  }
-},time/accelerationphase);
+  setTimeout(()=>{
+    if(typeof object3D.userData.rotationSpeed == 'number')
+    {
+      object3D.userData.rotationSpeed = object3D.userData.rotationSpeed + (0.001 * i);
+    } else {
+      Object.entries(object3D.userData.rotationSpeed).forEach(([key,value])=>{
+        const acceleration = (key == 'self')? 0.004:(key == 'orbitPlanet')? 0.0001 : 0.005;
+        if(value <= 0){
+          object3D.userData.rotationSpeed[key] = object3D.userData.rotationSpeed[key] - (acceleration * i); 
+        } else {
+          object3D.userData.rotationSpeed[key] = object3D.userData.rotationSpeed[key] + (acceleration * i); 
+        }
+      });
+    }
+  },time/accelerationphase);
 }
 });
 div.appendChild(a);
@@ -55337,15 +55359,15 @@ this.touch = event?.touches?.[0] ?? event;
 this.mouse.x = (this.touch.clientX / window.innerWidth) * 2 - 1;
 this.mouse.y = - (this.touch.clientY / window.innerHeight) * 2 + 1;
 this.raycaster.setFromCamera(this.mouse, this.camera);
-this.intersects = this.raycaster.intersectObjects([this.earthGroup,this.moon,this.mars,this.venus], true);
+this.intersects = this.raycaster.intersectObjects([this.earthGroup,this.moon,this.mars,this.venus,this.uranus], true);
 if (this.intersects.length > 0) {
-  divinfo(
-    this.labelRenderer,
-    this.scene,
-    this.intersects[0].object,
-    actif
-  );
-}
+    divinfo(
+      this.labelRenderer,
+      this.scene,
+      this.intersects[0].object,
+      actif
+    );
+  }
 };
 window.addEventListener('click',this.raycastCallBack);
 window.addEventListener('touchstart',this.raycastCallBack);
@@ -55423,10 +55445,10 @@ this.input.addEventListener('click',()=>{
     /**
     * @type {[Group<Object3DEventMap>,Mesh<IcosahedronGeometry, MeshPhongMaterial, Object3DEventMap>][]}
     */
-   this.tupleMesh = [this.moon,this.mars,this.venus];
+   this.tupleMesh = [this.moon,this.mars,this.venus,this.uranus];
     this.tupleMesh.forEach((mesh3D,index)=>{
        if(mesh3D.userData.rotationSpeed.orbitPlanet !== 0){
-           if(this.caption.length < 3){
+           if(this.caption.length < this.tupleMesh.length){
                this.caption.push(mesh3D.userData.rotationSpeed.orbitPlanet);
            }
            mesh3D.userData.rotationSpeed.orbitPlanet = 0;
@@ -55458,39 +55480,39 @@ file_getStarField(){
 function getStarfield({numStar = 500} = {},loaders)
 {    
 function randomSpherePoint() {
-  const raduis = Math.random() * 25 + 25;
-  const u = Math.random();
-  const v = Math.random();
-  const theta = 2 * Math.PI * u;
-  const phi  = Math.acos(2*v-1);
-  let x = raduis * Math.sin(phi) * Math.cos(theta); 
-  let y = raduis * Math.sin(phi) * Math.sin(theta); 
-  let z = raduis * Math.cos(phi); 
-  return {
-      pos: new Vector3(x,y,z),
-      hue:0.6,
-      minDist: raduis,
-  }
+    const raduis = Math.random() * 25 + 25;
+    const u = Math.random();
+    const v = Math.random();
+    const theta = 2 * Math.PI * u;
+    const phi  = Math.acos(2*v-1);
+    let x = raduis * Math.sin(phi) * Math.cos(theta); 
+    let y = raduis * Math.sin(phi) * Math.sin(theta); 
+    let z = raduis * Math.cos(phi); 
+    return {
+        pos: new Vector3(x,y,z),
+        hue:0.6,
+        minDist: raduis,
+    }
 }
 const verts = [];
 const colors = [];
 let col;
 for(let i = 0;i<numStar;i+=1)
-  {
-      let p = randomSpherePoint();
-      const {pos,hue} = p;
-      col = new Color().setHSL(hue,0.2,Math.random());
-      verts.push(pos.x,pos.y,pos.z);
-      colors.push(col.r,col.g,col.b);
-  }
+    {
+        let p = randomSpherePoint();
+        const {pos,hue} = p;
+        col = new Color().setHSL(hue,0.2,Math.random());
+        verts.push(pos.x,pos.y,pos.z);
+        colors.push(col.r,col.g,col.b);
+    }
 const geo = new BufferGeometry();
 geo.setAttribute("position",new Float32BufferAttribute(verts,3));
 geo.setAttribute("color",new Float32BufferAttribute(colors,3));
 const mat = new PointsMaterial({
-  size:0.2,
-  vertexColors:true,
-  map: loaders.load(Content.img.singleStar.url),
-  transparent:true,
+    size:0.2,
+    vertexColors:true,
+    map: loaders.load(Content.img.singleStar.url),
+    transparent:true,
 });
 const points = new Points(geo,mat);
 return points;
@@ -55512,23 +55534,27 @@ this.active =false;
 }
 requestAnimationFrame(()=>{
 if(Math.round(this.positionOfZ.z) < this.Zfinal){
-  this.active = true;
-  this.positionOfZ.z = this.positionOfZ.z  + 0.5;
-  this.camera.lookAt(0,0,0);
-  this.camera.position.z = this.positionOfZ.z;
+    this.active = true;
+    this.positionOfZ.z = this.positionOfZ.z  + 0.5;
+    this.camera.lookAt(0,0,0);
+    this.camera.position.z = this.positionOfZ.z;
 } 
 this.nightMesh.rotateY(this.dayMesh.userData.rotationSpeed);
 this.dayMesh.rotateY(this.dayMesh.userData.rotationSpeed);
+
 this.moonGroup.rotateY(this.moon.userData.rotationSpeed.orbitPlanet);
 this.moon.rotateY(this.moon.userData.rotationSpeed.self);
 this.moonLetter.rotateY(this.moon.userData.rotationSpeed.letters);
-this.marsGroup.rotateY(this.mars.userData.rotationSpeed.orbitPlanet);
+ this.uranusGroup.rotateY(this.uranus.userData.rotationSpeed.orbitPlanet);
+this.uranus.rotateY(this.uranus.userData.rotationSpeed.self);
+this.uranusLetter.rotateY(this.uranus.userData.rotationSpeed.letters);
+ this.marsGroup.rotateY(this.mars.userData.rotationSpeed.orbitPlanet);
 this.mars.rotateY(this.mars.userData.rotationSpeed.self);
 this.marsLetter.rotateY(this.mars.userData.rotationSpeed.letters);
-this.venusGroup.rotateY(this.venus.userData.rotationSpeed.orbitPlanet);
+ this.venusGroup.rotateY(this.venus.userData.rotationSpeed.orbitPlanet);
 this.venus.rotateY(this.venus.userData.rotationSpeed.self);
 this.venusLetter.rotateY(this.venus.userData.rotationSpeed.letters);
-this.composer.render();
+ this.composer.render();
 this.labelRenderer.render(this.scene,this.camera);
 this.file_animate();
 });
@@ -55539,6 +55565,7 @@ file_resizeSetting(){
 window.addEventListener('resize',()=> {
 this.camera.aspect = window.innerWidth / window.innerHeight;
 this.camera.updateProjectionMatrix();
+
 this.renderer.setSize(window.innerWidth,window.innerHeight);
 this.composer.setSize(window.innerWidth,window.innerHeight);
 this.labelRenderer.setSize(window.innerWidth,window.innerHeight);
